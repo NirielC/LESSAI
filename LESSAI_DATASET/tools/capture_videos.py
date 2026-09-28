@@ -1,5 +1,24 @@
-import cv2
+import sys
 from pathlib import Path
+
+import cv2
+
+
+# ============================================================
+# RUTA DEL PROYECTO
+# ============================================================
+
+# capture_videos.py está en:
+# LESSAI_DATASET/tools/
+#
+# parents[0] = tools
+# parents[1] = LESSAI_DATASET
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+
+# Permite importar config.py desde LESSAI_DATASET
+sys.path.insert(0, str(ROOT_DIR))
+
 
 from config import (
     VIDEOS_DIR,
@@ -14,11 +33,11 @@ from config import (
 )
 
 
-def seleccionar_persona():
-    """
-    Permite seleccionar la persona que realizará las grabaciones.
-    """
+# ============================================================
+# SELECCIONAR PERSONA
+# ============================================================
 
+def seleccionar_persona():
     while True:
         print()
         print("==============================")
@@ -42,11 +61,11 @@ def seleccionar_persona():
             print("ERROR: Ingresa un número válido.")
 
 
-def seleccionar_clase():
-    """
-    Permite seleccionar la clase que se desea grabar.
-    """
+# ============================================================
+# SELECCIONAR CLASE
+# ============================================================
 
+def seleccionar_clase():
     while True:
         print()
         print("==============================")
@@ -59,31 +78,29 @@ def seleccionar_clase():
         print("==============================")
 
         try:
-            opcion = int(input(f"Selecciona la clase (1-{len(CLASSES)}): "))
+            opcion = int(
+                input(
+                    f"Selecciona la clase (1-{len(CLASSES)}): "
+                )
+            )
 
             if 1 <= opcion <= len(CLASSES):
                 return CLASSES[opcion - 1]
 
             print(
-                f"ERROR: Debes seleccionar un número entre 1 y {len(CLASSES)}."
+                f"ERROR: Debes seleccionar un número "
+                f"entre 1 y {len(CLASSES)}."
             )
 
         except ValueError:
             print("ERROR: Ingresa un número válido.")
 
 
+# ============================================================
+# OBTENER SIGUIENTE VIDEO
+# ============================================================
+
 def obtener_siguiente_video(carpeta):
-    """
-    Busca el siguiente número disponible dentro de la carpeta.
-
-    Ejemplo:
-        001.mp4
-        002.mp4
-        003.mp4
-
-    Si existen hasta 003.mp4, devuelve 4.
-    """
-
     archivos = list(carpeta.glob("*.mp4"))
 
     if not archivos:
@@ -103,10 +120,11 @@ def obtener_siguiente_video(carpeta):
     return max(numeros) + 1
 
 
+# ============================================================
+# CUENTA REGRESIVA
+# ============================================================
+
 def esperar_cuenta_regresiva(cap, segundos):
-    """
-    Muestra una cuenta regresiva antes de comenzar la grabación.
-    """
 
     for i in range(segundos, 0, -1):
 
@@ -115,11 +133,9 @@ def esperar_cuenta_regresiva(cap, segundos):
         if not ret:
             return False
 
-        texto = str(i)
-
         cv2.putText(
             frame,
-            texto,
+            str(i),
             (ANCHO // 2 - 30, ALTO // 2),
             cv2.FONT_HERSHEY_SIMPLEX,
             3,
@@ -139,21 +155,24 @@ def esperar_cuenta_regresiva(cap, segundos):
             cv2.LINE_AA,
         )
 
-        cv2.imshow("LESSAI - Captura de videos", frame)
+        cv2.imshow(
+            "LESSAI - Captura de videos",
+            frame,
+        )
 
         tecla = cv2.waitKey(1000) & 0xFF
 
-        if tecla == 27:  # ESC
+        if tecla == 27:
             return False
 
     return True
 
 
+# ============================================================
+# GRABAR VIDEO
+# ============================================================
+
 def grabar_video(cap, ruta_salida):
-    """
-    Graba exactamente FRAMES_POR_VIDEO frames
-    y los guarda como MP4.
-    """
 
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
@@ -175,7 +194,11 @@ def grabar_video(cap, ruta_salida):
         ret, frame = cap.read()
 
         if not ret:
-            print("ERROR: No se pudo leer un frame de la cámara.")
+            print(
+                "ERROR: No se pudo leer "
+                "un frame de la cámara."
+            )
+
             writer.release()
 
             if ruta_salida.exists():
@@ -187,7 +210,6 @@ def grabar_video(cap, ruta_salida):
 
         frames_grabados += 1
 
-        # Mostrar progreso
         progreso = (
             f"Grabando: "
             f"{frames_grabados}/{FRAMES_POR_VIDEO}"
@@ -204,11 +226,15 @@ def grabar_video(cap, ruta_salida):
             cv2.LINE_AA,
         )
 
-        cv2.imshow("LESSAI - Captura de videos", frame)
+        cv2.imshow(
+            "LESSAI - Captura de videos",
+            frame,
+        )
 
         tecla = cv2.waitKey(1) & 0xFF
 
-        if tecla == 27:  # ESC
+        if tecla == 27:
+
             writer.release()
 
             if ruta_salida.exists():
@@ -221,9 +247,12 @@ def grabar_video(cap, ruta_salida):
     return True
 
 
+# ============================================================
+# MAIN
+# ============================================================
+
 def main():
 
-    # Crear las carpetas necesarias
     crear_directorios()
 
     print()
@@ -231,9 +260,9 @@ def main():
     print("       LESSAI - CAPTURA DE DATOS")
     print("======================================")
 
-    # ----------------------------------
-    # SELECCIONAR PERSONA
-    # ----------------------------------
+    # --------------------------------------------------------
+    # PERSONA
+    # --------------------------------------------------------
 
     persona = seleccionar_persona()
 
@@ -242,12 +271,15 @@ def main():
     print()
     print("--------------------------------------")
     print(f"Persona seleccionada: {persona}")
-    print(f"Rango asignado: {inicio:03d} - {fin:03d}")
+    print(
+        f"Rango asignado: "
+        f"{inicio:03d} - {fin:03d}"
+    )
     print("--------------------------------------")
 
-    # ----------------------------------
-    # SELECCIONAR CLASE
-    # ----------------------------------
+    # --------------------------------------------------------
+    # CLASE
+    # --------------------------------------------------------
 
     clase = seleccionar_clase()
 
@@ -255,12 +287,15 @@ def main():
     print("--------------------------------------")
     print(f"Clase seleccionada: {clase}")
     print(f"Persona: {persona}")
-    print(f"Videos asignados: {inicio:03d} - {fin:03d}")
+    print(
+        f"Videos asignados: "
+        f"{inicio:03d} - {fin:03d}"
+    )
     print("--------------------------------------")
 
-    # ----------------------------------
+    # --------------------------------------------------------
     # CARPETA DE LA CLASE
-    # ----------------------------------
+    # --------------------------------------------------------
 
     carpeta_clase = VIDEOS_DIR / clase
 
@@ -269,14 +304,14 @@ def main():
         exist_ok=True,
     )
 
-    # ----------------------------------
-    # DETERMINAR SIGUIENTE VIDEO
-    # ----------------------------------
+    # --------------------------------------------------------
+    # SIGUIENTE VIDEO
+    # --------------------------------------------------------
 
-    siguiente = obtener_siguiente_video(carpeta_clase)
+    siguiente = obtener_siguiente_video(
+        carpeta_clase
+    )
 
-    # Si ya hay archivos, asegurar que esté
-    # dentro del rango correspondiente.
     if siguiente < inicio:
         siguiente = inicio
 
@@ -284,60 +319,78 @@ def main():
 
         print()
         print("======================================")
-        print("       RANGO COMPLETADO")
+        print("          RANGO COMPLETADO")
         print("======================================")
         print(f"Clase: {clase}")
         print(f"Persona: {persona}")
         print(
-            f"Ya existen suficientes videos "
-            f"para el rango {inicio:03d}-{fin:03d}."
+            f"Rango: "
+            f"{inicio:03d} - {fin:03d}"
         )
         print("======================================")
 
         return
 
     print()
-    print(f"Siguiente video: {siguiente:03d}.mp4")
+    print(
+        f"Siguiente video: "
+        f"{siguiente:03d}.mp4"
+    )
 
-    # ----------------------------------
-    # ABRIR CÁMARA
-    # ----------------------------------
+    # --------------------------------------------------------
+    # CÁMARA
+    # --------------------------------------------------------
 
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
 
         print()
-        print("ERROR: No se pudo abrir la cámara.")
+        print(
+            "ERROR: No se pudo abrir "
+            "la cámara."
+        )
 
         return
 
-    # Configuración de cámara
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, ANCHO)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, ALTO)
-    cap.set(cv2.CAP_PROP_FPS, FPS)
+    cap.set(
+        cv2.CAP_PROP_FRAME_WIDTH,
+        ANCHO,
+    )
+
+    cap.set(
+        cv2.CAP_PROP_FRAME_HEIGHT,
+        ALTO,
+    )
+
+    cap.set(
+        cv2.CAP_PROP_FPS,
+        FPS,
+    )
 
     print()
     print("Cámara iniciada correctamente.")
 
-    # ----------------------------------
-    # BUCLE DE GRABACIÓN
-    # ----------------------------------
+    # --------------------------------------------------------
+    # GRABACIÓN
+    # --------------------------------------------------------
 
     salir = False
 
     while not salir:
 
-        # Verificar que todavía haya espacio
         if siguiente > fin:
 
             print()
             print("======================================")
-            print("       RANGO COMPLETADO")
+            print("          RANGO COMPLETADO")
             print("======================================")
             print(f"Clase: {clase}")
             print(f"Persona: {persona}")
-            print(f"Videos: {inicio:03d} - {fin:03d}")
+            print(
+                f"Videos: "
+                f"{inicio:03d} - {fin:03d}"
+            )
             print("======================================")
 
             break
@@ -345,20 +398,21 @@ def main():
         ret, frame = cap.read()
 
         if not ret:
-            print("ERROR: No se pudo leer la cámara.")
+
+            print(
+                "ERROR: No se pudo "
+                "leer la cámara."
+            )
+
             break
 
-        # ----------------------------------
-        # INFORMACIÓN EN PANTALLA
-        # ----------------------------------
-
-        texto_clase = f"Clase: {clase}"
-        texto_persona = f"Persona: {persona}"
-        texto_video = f"Video: {siguiente:03d}/{fin:03d}"
+        # ----------------------------------------------------
+        # TEXTO EN PANTALLA
+        # ----------------------------------------------------
 
         cv2.putText(
             frame,
-            texto_clase,
+            f"Clase: {clase}",
             (20, 35),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.8,
@@ -369,7 +423,7 @@ def main():
 
         cv2.putText(
             frame,
-            texto_persona,
+            f"Persona: {persona}",
             (20, 70),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.7,
@@ -380,7 +434,7 @@ def main():
 
         cv2.putText(
             frame,
-            texto_video,
+            f"Video: {siguiente:03d}/{fin:03d}",
             (20, 105),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.7,
@@ -418,40 +472,47 @@ def main():
 
         tecla = cv2.waitKey(1) & 0xFF
 
-        # ----------------------------------
-        # ESC = SALIR
-        # ----------------------------------
+        # ----------------------------------------------------
+        # ESC
+        # ----------------------------------------------------
 
         if tecla == 27:
+
             print()
-            print("Grabación detenida por el usuario.")
+            print(
+                "Grabación detenida "
+                "por el usuario."
+            )
+
             salir = True
             break
 
-        # ----------------------------------
-        # ESPACIO = GRABAR
-        # ----------------------------------
+        # ----------------------------------------------------
+        # ESPACIO
+        # ----------------------------------------------------
 
         if tecla == 32:
 
             print()
             print("--------------------------------------")
-            print(f"Preparando video {siguiente:03d}")
+            print(
+                f"Preparando video "
+                f"{siguiente:03d}"
+            )
             print(f"Clase: {clase}")
             print(f"Persona: {persona}")
             print("--------------------------------------")
 
-            # Cuenta regresiva
             continuar = esperar_cuenta_regresiva(
                 cap,
                 COUNTDOWN_SEGUNDOS,
             )
 
             if not continuar:
+
                 salir = True
                 break
 
-            # Ruta final del video
             ruta_salida = (
                 carpeta_clase
                 / f"{siguiente:03d}.mp4"
@@ -462,7 +523,6 @@ def main():
                 f"{ruta_salida.name}"
             )
 
-            # Grabar
             exito = grabar_video(
                 cap,
                 ruta_salida,
@@ -478,7 +538,6 @@ def main():
 
                 siguiente += 1
 
-                # Verificar si terminó el rango
                 if siguiente > fin:
 
                     print()
@@ -486,7 +545,7 @@ def main():
                         "======================================"
                     )
                     print(
-                        "      CLASE COMPLETADA"
+                        "         CLASE COMPLETADA"
                     )
                     print(
                         "======================================"
@@ -494,7 +553,7 @@ def main():
                     print(f"Clase: {clase}")
                     print(f"Persona: {persona}")
                     print(
-                        f"Videos grabados: "
+                        f"Videos: "
                         f"{inicio:03d} - {fin:03d}"
                     )
                     print(
@@ -507,12 +566,13 @@ def main():
 
                 print()
                 print(
-                    "La grabación no se completó."
+                    "La grabación "
+                    "no se completó."
                 )
 
-    # ----------------------------------
-    # CERRAR CÁMARA
-    # ----------------------------------
+    # --------------------------------------------------------
+    # CERRAR
+    # --------------------------------------------------------
 
     cap.release()
     cv2.destroyAllWindows()
@@ -521,6 +581,10 @@ def main():
     print("Cámara cerrada.")
     print("Programa finalizado.")
 
+
+# ============================================================
+# EJECUTAR
+# ============================================================
 
 if __name__ == "__main__":
     main()
