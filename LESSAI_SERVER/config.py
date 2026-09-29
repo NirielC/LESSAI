@@ -68,7 +68,7 @@ RECONNECT_DELAY = 2.0
 # ============================================================
 
 MODEL_PATH_KERAS = (
-    MODELS_DIR / "modelo_lessa.keras"
+    MODELS_DIR / "modelo_lessa_v2.keras"
 )
 
 MODEL_PATH_H5 = (

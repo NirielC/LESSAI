@@ -4,10 +4,10 @@ from pathlib import Path
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
@@ -17,7 +17,7 @@ from config import MODELS_DIR, PROCESSED_DIR
 
 SEED = 42
 
-EPOCHS = 100
+EPOCHS = 200
 BATCH_SIZE = 32
 
 
@@ -149,19 +149,26 @@ def main():
     )
 
     ruta_modelo = (
-        MODELS_DIR / "modelo_lessa.keras"
+        MODELS_DIR / "modelo_lessa_v2.keras"
     )
 
     callbacks = [
         EarlyStopping(
             monitor="val_loss",
-            patience=15,
+            patience=25,
             restore_best_weights=True,
         ),
         ModelCheckpoint(
             filepath=str(ruta_modelo),
-            monitor="val_accuracy",
+            monitor="val_loss",
             save_best_only=True,
+        ),
+        ReduceLROnPlateau(
+            monitor="val_loss",
+            factor=0.5,
+            patience=8,
+            min_lr=1e-5,
+            verbose=1,
         ),
     ]
 
