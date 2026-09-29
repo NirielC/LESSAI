@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "LESSA",
+    "slug": "lessa-app",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "lessa",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "sv.lessa.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "LESSA usa el microfono para transcribir voz a texto.",
+        "NSSpeechRecognitionUsageDescription": "LESSA transcribe la voz de tu interlocutor a texto."
+      }
+    },
+    "android": {
+      "package": "sv.lessa.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0C2240"
+      },
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
