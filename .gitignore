@@ -61,3 +61,19 @@ LESSAI_SERVER/models/*
 
 *.log
 *.tmp
+# =========================
+# NODE / REACT NATIVE / EXPO
+# =========================
+
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Builds nativos generados por `expo prebuild`
+/LESSAI_APP/android/
+/LESSAI_APP/ios/
+
+# Metro
+.metro-health-check*

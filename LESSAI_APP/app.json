@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "LESSA",
+    "slug": "lessa-app",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "lessa",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "sv.lessa.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "LESSA usa la camara para reconocer senas en tiempo real.",
+        "NSMicrophoneUsageDescription": "LESSA usa el microfono para transcribir voz a texto.",
+        "NSSpeechRecognitionUsageDescription": "LESSA transcribe la voz de tu interlocutor a texto."
+      }
+    },
+    "android": {
+      "package": "sv.lessa.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0C2240"
+      },
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "LESSA usa la camara para reconocer senas en tiempo real.",
+          "microphonePermission": "LESSA usa el microfono para transcribir voz a texto.",
+          "recordAudioAndroid": false
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
