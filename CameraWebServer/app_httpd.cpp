@@ -190,7 +190,7 @@ void startCameraServer()
             .method = HTTP_GET,
 
             .handler = stream_handler,
-s
+
             .user_ctx = NULL
 
         };
