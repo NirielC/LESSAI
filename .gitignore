@@ -16,3 +16,5 @@ LESSAI_DATASET/dataset/
 
 # Logs de entrenamiento
 Logs/
+# Pruebas de entrenamiento
+LESSAI_DATASET/models/prueba_*

@@ -60,4 +60,24 @@ La APK queda en `LESSAI_MOVIL/dist/`.
 - **Docker Desktop no arranca** ("The file cannot be accessed by the system"): ver el final de `LESSAI_MOVIL/DOCKER.md`.
 - **Precisión real:** 97.8% en prueba, pero 68–88% con personas que el modelo no vio. Lo que más mejora:
   grabar a más personas y la clase `nada`.
-- **Pendiente:** dataset v3, abecedario, fotos del equipo.
+- **Pendiente:** fotos del equipo.
+
+## 6. Juntar los datos de otra persona y sacar el modelo
+
+Cada persona graba con su número (`p1`, `p2`…), así los archivos nunca se pisan.
+
+1. **Señas** (`capture_videos.py`): copiar las carpetas de clase de su `videos_v3/` dentro de
+   `LESSAI_DATASET/dataset/videos_v3/` (Windows pregunta "combinar carpetas": sí).
+2. **Abecedario** (`capture_abecedario.py`, se le puede pasar solo ese archivo): manda
+   `abecedario_p<N>.zip`; copiar sus carpetas `imagenes/` y `videos/` dentro de
+   `LESSAI_DATASET/dataset/abecedario/`.
+3. Revisar cuánto hay de cada quien:
+   ```bash
+   python LESSAI_DATASET/tools/revisar_dataset.py
+   ```
+4. Entrenar todo e instalarlo en la app (extrae solo lo nuevo; suma los 4000 videos originales):
+   ```bash
+   python LESSAI_DATASET/tools/actualizar_modelo.py --abecedario --por-persona
+   ```
+5. Revisar `LESSAI_DATASET/models/v3/reporte.json` y, si todo bien, compilar la APK
+   (`build-apk.ps1` o el mismo comando con `--apk`).
