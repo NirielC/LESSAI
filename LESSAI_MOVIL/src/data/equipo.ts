@@ -53,5 +53,5 @@ export const EQUIPO: Miembro[] = [
   },
 ];
 
-export const APP_VERSION = 'Alfa 0.4';
+export const APP_VERSION = 'Alfa 0.5';
 export const APP_YEAR = 2026;
